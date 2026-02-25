@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:15
+    container_name: smart-diet-db
+    restart: always
+    environment:
+      POSTGRES_USER: rose_user
+      POSTGRES_PASSWORD: mypassword123
+      POSTGRES_DB: smart_diet_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
