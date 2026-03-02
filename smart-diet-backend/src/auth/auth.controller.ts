@@ -11,11 +11,18 @@ export class AuthController {
 
   @Post('login') // 'POST /auth/login' 주소로 요청을 받음.
   @ApiOperation({ summary: '로그인 API', description: '이메일과 비밀번호로 로그인을 시도함.' }) // 제목과 설명
-  @ApiResponse({ status: 200, description: '로그인 성공' }) // 성공 시 
+  @ApiResponse({ 
+    status: 200, 
+    description: '로그인 성공 및 JWT 토큰 발급',
+    schema: {
+      example: { accessToken: 'eyJhbGciOiJIUzI1Ni...' }
+    }
+  }) // 성공 시 
   @ApiResponse({ status: 401, description: '인증 실패' }) // 실패 시 
   @HttpCode(HttpStatus.OK) // 로그인 성공 시 200 OK 상태코드를 보냄.
   async login(@Body() loginDto: LoginDto) {
     // 서비스의 로그인 메서드를 실행해서 결과를 리턴함.
+    // AuthService의 login 메서드를 호출하여 { accessToken: '...' }를 반환받음
     return this.authService.login(loginDto);
   }
 }
