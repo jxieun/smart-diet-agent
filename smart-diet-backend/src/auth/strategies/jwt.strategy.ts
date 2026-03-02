@@ -17,8 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // 2. 토큰 만료 시 요청을 거부합니다.
       ignoreExpiration: false,
-      // 3. .env에 설정한 비밀 키로 서명을 확인합니다.
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      // getOrThrow를 써서 "무조건 값이 있다"는 것을 TypeScript에게 알려줌
+      secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });
   }
 
