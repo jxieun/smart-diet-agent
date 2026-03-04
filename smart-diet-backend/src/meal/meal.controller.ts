@@ -4,6 +4,7 @@ import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { MealResponseDto } from './dto/meal-response.dto';
 
 @ApiTags('Meals (식단 관리)') // Swagger에서 그룹화될 이름
 @ApiBearerAuth() // JWT 인증이 필요한 API임을 표시 (자물쇠 아이콘 생성)
@@ -14,15 +15,18 @@ export class MealController {
 
   @Post()
   @ApiOperation({ summary: '식단 기록 생성', description: '현재 로그인한 유저의 식단 데이터를 저장합니다.' })
-  @ApiResponse({ status: 201, description: '식단 생성 성공' })
-  create(@Request() req, @Body() createMealDto: CreateMealDto) {
-    return this.mealService.create(req.user.id, createMealDto);
+  @ApiResponse({ status: 201, description: '식단 생성 성공', type: MealResponseDto }) // 성공 시 반환되는 데이터의 형태를 MealResponseDto로 명시
+  async create(@Request() req, @Body() createMealDto: CreateMealDto) {
+    const meal = await this.mealService.create(req.user.id, createMealDto);
+    return new MealResponseDto(meal); // DTO로 감싸서 반환
   }
 
   @Get()
   @ApiOperation({ summary: '내 모든 식단 조회', description: '로그인한 유저가 작성한 모든 식단 리스트를 최신순으로 가져옵니다.' })
-  findAll(@Request() req) {
-    return this.mealService.findAll(req.user.id);
+  @ApiResponse({ status: 200, type: [MealResponseDto] }) // 배열 타입 명시
+  async findAll(@Request() req) {
+    const meals = await this.mealService.findAll(req.user.id);
+    return meals.map(meal => new MealResponseDto(meal)); // 전체 변환
   }
 
   @Get(':id')
