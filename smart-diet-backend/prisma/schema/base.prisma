@@ -1,0 +1,20 @@
+// 설정 및 공통 Enum
+
+// prisma/schema/base.prisma
+
+generator client {
+    provider        = "prisma-client-js"
+    // 스키마 폴더 기능을 사용하기 위해 previewFeatures 추가
+    previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum MealType {
+    BREAKFAST
+    LUNCH
+    DINNER
+    SNACK
+}

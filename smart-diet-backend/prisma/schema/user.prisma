@@ -1,0 +1,20 @@
+// User 모델
+
+// prisma/schema/user.prisma
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  password        String
+  nickname        String
+  activityLevel   String?  @map("activity_level")
+  goalCalories    Int      @default(2000) @map("goal_calories")
+  willpowerScore  Int      @default(100) @map("willpower_score")
+  
+  // Meal 모델과의 관계
+  meals           Meal[]  
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}

@@ -1,0 +1,25 @@
+// Meal 모델
+
+// prisma/schema/meal.prisma
+
+model Meal {
+  id          String   @id @default(uuid())
+  title       String   
+  mealType    MealType @default(BREAKFAST)
+  calories    Float    
+  carbs       Float?   
+  protein     Float?   
+  fat         Float?   
+  mealDate    DateTime @default(now()) 
+  
+  // User 모델과의 관계
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([mealDate])
+  @@map("meals")
+}
