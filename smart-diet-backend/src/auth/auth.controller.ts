@@ -4,6 +4,7 @@ import { Body, Controller, Post, UseGuards, Request, HttpCode, HttpStatus, Get }
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @ApiTags('auth') // 이 컨트롤러의 모든 API를 'auth' 그룹으로 묶음.
 @Controller('auth') // 공통 주소는 'auth'임.
@@ -35,18 +36,16 @@ export class AuthController {
     summary: '내 정보 조회 API', 
     description: 'JWT 토큰을 이용하여 현재 로그인한 사용자의 정보를 가져옵니다.' 
   })
+
   @ApiResponse({ 
     status: 200, 
+    type: UserResponseDto,
     description: '조회 성공',
     schema: {
       example: {
         message: '내 정보 조회 성공',
-        user: {
-          id: 'uuid-1234',
-          email: 'rose@example.com',
-          nickname: '로즈',
-          createdAt: '2026-03-02T...'
-        }
+        user: new UserResponseDto(req.user)
+      }
       }
     }
   })
@@ -54,7 +53,7 @@ export class AuthController {
   getProfile(@Request() req) {
     return {
       message: '내 정보 조회 성공',
-      user: req.user,
+      user: new UserResponseDto(req.user),
     };
   }
 }
