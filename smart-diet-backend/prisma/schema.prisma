@@ -13,6 +13,38 @@ datasource db {
   provider = "postgresql"
 }
 
+// 1. 식사 시간 구분을 위한 Enum 정의
+enum MealType {
+  BREAKFAST // 아침
+  LUNCH     // 점심
+  DINNER    // 저녁
+  SNACK     // 간식
+}
+
+// 2. 식단 기록 모델
+model Meal {
+  id          String   @id @default(uuid())
+  title       String   // 음식명 또는 메뉴 이름
+  mealType    MealType @default(BREAKFAST)
+  calories    Float    // 섭취 칼로리 (kcal)
+  carbs       Float?   // 탄수화물 (g, 선택)
+  protein     Float?   // 단백질 (g, 선택)
+  fat         Float?   // 지방 (g, 선택)
+  mealDate    DateTime @default(now()) // 식사 날짜 및 시간
+  
+  // 유저와의 1:N 관계 설정
+  // onDelete: Cascade 설정으로 유저 탈퇴 시 관련 식단도 자동 삭제됨
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId]) // 특정 유저의 식단 조회 성능 향상을 위한 인덱스
+  @@index([mealDate]) // 날짜별 조회 성능 향상을 위한 인덱스
+}
+
+// 3. User 모델 업데이트
 model User {
   id              String   @id @default(uuid())
   email           String   @unique
@@ -21,6 +53,7 @@ model User {
   activityLevel   String?  @map("activity_level")
   goalCalories    Int      @default(2000) @map("goal_calories")
   willpowerScore  Int      @default(100) @map("willpower_score")
+  meals          Meal[]   // 유저가 작성한 식단 기록 리스트
   createdAt       DateTime @default(now()) @map("created_at")
 
   @@map("users")
