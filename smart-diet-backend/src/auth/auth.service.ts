@@ -1,7 +1,7 @@
 // src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt'; // JWT 발급을 위해 추가
-import { PrismaService} from 'src/prisma.service'; // Prisma 연결용 서비스
+import { PrismaService} from 'src/prisma/prisma.service'; // Prisma 연결용 서비스
 import { LoginDto } from './dto/login.dto'; 
 import * as bcrypt from 'bcrypt'; // 비밀번호 해싱 라이브러리 : 비밀번호 비교를 위해 가져옴
 

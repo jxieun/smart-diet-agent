@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // 환경 변수 사용을 위해 추가
 import { AuthService } from './auth.service'; // 우리가 만든 서비스를 가져옴.
 import { AuthController } from './auth.controller'; // 우리가 만든 컨트롤러를 가져옴.
-import { PrismaService } from '../prisma.service'; // DB 연결을 위한 프리즈마 서비스를 가져옴.
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
@@ -25,6 +24,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController], 
-  providers: [AuthService, PrismaService, JwtStrategy], // AuthService와 PrismaService, JwtStrategy를 이 모듈의 '프로바이더'로 등록 (의존성 주입을 위해)
+  providers: [AuthService, JwtStrategy], // AuthService, JwtStrategy를 이 모듈의 '프로바이더'로 등록 (의존성 주입을 위해)
 })
 export class AuthModule {}

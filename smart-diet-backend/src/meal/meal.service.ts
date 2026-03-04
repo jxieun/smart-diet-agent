@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma.service'; // 프로젝트 경로에 맞춰 수정
+import { PrismaService } from '../prisma/prisma.service'; // 프로젝트 경로에 맞춰 수정
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 
