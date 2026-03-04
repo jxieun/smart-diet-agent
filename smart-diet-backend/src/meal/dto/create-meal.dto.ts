@@ -19,7 +19,7 @@ export class CreateMealDto {
   @ApiProperty({ description: '섭취 칼로리 (kcal)', example: 350 })
   @IsNumber()
   @Min(0)
-  @IsNotEmpty({ message: '칼로리를 입력해주세요.' }))
+  @IsNotEmpty({ message: '칼로리를 입력해주세요.' })
   calories: number;
 
   @ApiPropertyOptional({ description: '탄수화물 함량 (g)', example: 10.5 })

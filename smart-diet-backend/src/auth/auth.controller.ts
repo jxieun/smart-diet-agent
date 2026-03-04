@@ -36,18 +36,10 @@ export class AuthController {
     summary: '내 정보 조회 API', 
     description: 'JWT 토큰을 이용하여 현재 로그인한 사용자의 정보를 가져옵니다.' 
   })
-
   @ApiResponse({ 
     status: 200, 
-    type: UserResponseDto,
     description: '조회 성공',
-    schema: {
-      example: {
-        message: '내 정보 조회 성공',
-        user: new UserResponseDto(req.user)
-      }
-      }
-    }
+    type: UserResponseDto
   })
   @ApiResponse({ status: 401, description: '토큰이 없거나 유효하지 않음' })
   getProfile(@Request() req) {
