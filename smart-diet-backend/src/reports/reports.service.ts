@@ -7,6 +7,13 @@ export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getWeeklyReport(userId: string): Promise<WeeklyReportResponseDto> {
+    // 1. 유저의 목표 칼로리 가져오기 (기본값 2000kcal)
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { targetCalories: true }
+    });
+    const targetCalories = user?.targetCalories || 2000;
+
     // 1. 기간 설정 (오늘부터 7일 전까지)
     const endDate = new Date();
     const startDate = new Date();
@@ -51,6 +58,12 @@ export class ReportsService {
         daily.totalCarbs += meal.carbs || 0;
         daily.totalProtein += meal.protein || 0;
         daily.totalFat += meal.fat || 0;
+
+        // 달성률 및 상태 업데이트
+      daily.targetCalories = targetCalories;
+      daily.achievementRate = Math.round((daily.totalCalories / targetCalories) * 100);
+      // 목표의 90%~110% 사이면 달성으로 간주하는 등의 로직 가능
+      daily.isGoalAchieved = daily.totalCalories >= targetCalories * 0.9 && daily.totalCalories <= targetCalories * 1.1;
       }
     });
 
