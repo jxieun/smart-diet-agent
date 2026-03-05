@@ -72,3 +72,17 @@ export class WeeklyReportResponseDto {
     Object.assign(this, partial);
   }
 }
+
+/**
+ * 목표 달성 여부 DTO
+ */
+export class DailyNutritionDto {
+  date: string;
+  totalCalories: number;
+  targetCalories: number; // 추가: 목표 칼로리
+  achievementRate: number; // 추가: 달성률 (%)
+  isGoalAchieved: boolean; // 추가: 목표 달성 여부
+  totalCarbs: number;
+  totalProtein: number;
+  totalFat: number;
+}
