@@ -13,9 +13,9 @@ export class ReportsService {
     // 1. 유저의 목표 칼로리 정보 가져오기 (기본값 2000kcal)
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { targetCalories: true },
+      select: { goalCalories: true },
     });
-    const targetCalories = user?.targetCalories || 2000;
+    const targetCalories = user?.goalCalories || 2000;
 
     // 2. 기간 설정 (오늘 자정부터 6일 전 00시까지 총 7일)
     const endDate = new Date();
