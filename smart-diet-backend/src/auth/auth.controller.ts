@@ -5,12 +5,37 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { SignupDto } from 'src/users/dto/signup.dto';
 
 @ApiTags('auth') // 이 컨트롤러의 모든 API를 'auth' 그룹으로 묶음.
 @Controller('auth') // 공통 주소는 'auth'임.
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // 1. 회원가입 API
+  @Post('signup') // POST 방식으로 '/auth/signup' 요청이 오면 실행됨.
+  @ApiOperation({ 
+    summary: '회원가입 API', 
+    description: '새로운 사용자를 생성하고 정보를 저장함.' 
+  }) // API의 목적을 적어줌.
+  @ApiResponse({ 
+    status: 201, 
+    description: '회원가입 성공함.' 
+  }) // 성공했을 때의 응답 설명임.
+  @ApiResponse({ 
+    status: 400, 
+    description: '잘못된 입력값(이메일 형식 등)임.' 
+  }) // 입력값 유효성 검사 실패 시 설명임.
+  @ApiResponse({ 
+    status: 409, 
+    description: '이미 가입된 이메일임.' 
+  }) // 중복 이메일 에러 설명임.
+  // @Body(): 클라이언트가 보낸 본문(Body) 데이터를 SignupDto 형태로 받겠다는 뜻
+  async signup(@Body() dto: SignupDto) {
+    // 받은 데이터를 서비스의 signup 함수로 넘겨줌.
+    return this.usersService.signup(dto);
+  }
+  // 2. 로그인 API
   @Post('login') // 'POST /auth/login' 주소로 요청을 받음.
   @ApiOperation({ summary: '로그인 API', description: '이메일과 비밀번호로 로그인을 시도함.' }) // 제목과 설명
   @ApiResponse({ 
@@ -28,6 +53,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  // 3. 내 정보 조회 API
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   @ApiBearerAuth() // 🔒 Swagger UI에 자물쇠 아이콘을 표시하고 토큰이 필요함을 알림

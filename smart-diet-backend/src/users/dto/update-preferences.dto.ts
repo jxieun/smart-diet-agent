@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class UpdateUserPreferencesDto {
-  @ApiPropertyOptional({ example: '숲속마멜', description: '변경할 닉네임' })
+  @ApiPropertyOptional({ example: '마멜', description: '변경할 닉네임' })
   @IsString()
   @IsOptional()
   nickname?: string;
