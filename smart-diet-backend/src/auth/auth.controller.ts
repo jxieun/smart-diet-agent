@@ -5,7 +5,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { SignupDto } from 'src/users/dto/signup.dto';
+import { SignupDto } from './dto/signup.dto';
 
 @ApiTags('auth') // 이 컨트롤러의 모든 API를 'auth' 그룹으로 묶음.
 @Controller('auth') // 공통 주소는 'auth'임.

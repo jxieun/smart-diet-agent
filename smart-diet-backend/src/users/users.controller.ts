@@ -2,7 +2,7 @@
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Controller, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { SignupDto } from './dto/signup.dto';
+import { SignupDto } from '../auth/dto/signup.dto';
 
 @ApiTags('auth') // 이 컨트롤러의 API들을 'auth' 그룹으로 묶음.
 @Controller('auth') // 이 컨트롤러의 기본 주소는 'http://localhost:3000/auth'

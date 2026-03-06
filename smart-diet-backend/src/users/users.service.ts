@@ -1,7 +1,7 @@
 // src/users/users.service.ts
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; 
-import { SignupDto } from './dto/signup.dto';
+import { SignupDto } from '../auth/dto/signup.dto';
 import * as bcrypt from 'bcrypt'; // 비밀번호 암호화를 위한 라이브러리
 
 @Injectable() // 이 클래스가 NestJS의 '서비스'임을 나타냄
