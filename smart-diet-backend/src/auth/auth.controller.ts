@@ -1,11 +1,12 @@
 // src/auth/auth.controller.ts
 import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger'; // 데코레이터
-import { Body, Controller, Post, UseGuards, Request, HttpCode, HttpStatus, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, HttpCode, HttpStatus, Get, Patch } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { SignupDto } from './dto/signup.dto';
+import { UpdateUserPreferencesDto } from './dto/update-preferences.dto';
 
 @ApiTags('auth') // 이 컨트롤러의 모든 API를 'auth' 그룹으로 묶음.
 @Controller('auth') // 공통 주소는 'auth'임.
@@ -33,7 +34,7 @@ export class AuthController {
   // @Body(): 클라이언트가 보낸 본문(Body) 데이터를 SignupDto 형태로 받겠다는 뜻
   async signup(@Body() dto: SignupDto) {
     // 받은 데이터를 서비스의 signup 함수로 넘겨줌.
-    return this.usersService.signup(dto);
+    return this.authService.signup(dto);
   }
   // 2. 로그인 API
   @Post('login') // 'POST /auth/login' 주소로 요청을 받음.
@@ -72,6 +73,33 @@ export class AuthController {
     return {
       message: '내 정보 조회 성공',
       user: new UserResponseDto(req.user),
+    };
+  }
+
+  // ✨ 4. 사용자 목표 및 프로필 수정 API
+  @UseGuards(JwtAuthGuard)
+  @Patch('preferences') // PATCH /auth/preferences
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: '사용자 목표 및 프로필 수정 API', 
+    description: '닉네임이나 목표 칼로리를 선택적으로 변경합니다.' 
+  })
+  @ApiResponse({ 
+    status: 200, 
+    description: '수정 성공',
+    type: UserResponseDto 
+  })
+  @ApiResponse({ status: 401, description: '인증 실패' })
+  async updatePreferences(
+    @Request() req, 
+    @Body() updateDto: UpdateUserPreferencesDto
+  ) {
+    // req.user.id를 넘겨 본인의 정보만 수정하도록 함
+    const updatedUser = await this.authService.updateUserPreferences(req.user.id, updateDto);
+    return {
+      message: '사용자 정보 수정 성공',
+      user: new UserResponseDto(updatedUser), // 반환 시에도 민감 정보 정제
     };
   }
 }
