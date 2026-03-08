@@ -10,6 +10,9 @@ model AnalysisTask {
   imageUrl     String         // 업로드된 이미지 경로
   status       AnalysisStatus @default(PENDING)
   
+  // ✅ 분석 요청 시점의 목표 칼로리를 저장
+  targetCalories    Int?
+
   // 분석 결과 데이터 (JSON 형태로 저장하여 유연성 확보)
   result       Json?          
   errorMessage String?        // 실패 시 에러 내용 저장
