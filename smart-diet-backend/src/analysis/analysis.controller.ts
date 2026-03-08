@@ -7,10 +7,9 @@ import {
   Request, 
   UseInterceptors, 
   UploadedFile, 
-  BadRequestException,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator
+  HttpStatus,
+  ParseFilePipeBuilder,
+  BadRequestException
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -26,23 +25,22 @@ export class AnalysisController {
   async analyzeMenu(
     @Request() req, 
     @UploadedFile(
-      new ParseFilePipe({
-        // 🛡️ 파일이 아예 없는 경우를 방지\
-        fileIsRequired: true,
-        validators: [
-          // 🛡️ 최대 용량을 5MB로 제한
-          new MaxFileSizeValidator({ 
-            maxSize: 5 * 1024 * 1024, 
-            message: '파일 크기는 5MB를 초과할 수 없습니다.' 
-          }),
-          // 🛡️ 허용된 이미지 확장자만 통과
-          new FileTypeValidator({ 
-            fileType: /(image\/png|image\/jpeg|image\/jpg|image\/gif)/
-          }),
-        ],
-      }),
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 5 * 1024 * 1024,
+          message: '파일 크기는 5MB를 초과할 수 없습니다.',
+        })
+        .build({
+          // ✅ 에러 발생 시 커스텀 응답 설정
+          errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+         }),
     ) file: Express.Multer.File,
   ) {
+    // ✅ mimetype 직접 검증
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException('이미지 파일만 업로드 가능합니다. (jpeg, jpg, png, gif)');
+    }
     // 위 파이프에서 검증을 통과해야만 이 로직이 실행
     
     // 1. 실제 저장된 파일 경로 (Prisma DB 저장용)
