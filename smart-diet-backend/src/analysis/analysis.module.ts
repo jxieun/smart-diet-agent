@@ -11,14 +11,14 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [
     PrismaModule,
     // ✅ RabbitMQ 연결 설정
-    RabbitMQModule.forRoot(RabbitMQModule, {
+    RabbitMQModule.forRoot({
       exchanges: [
         {
-          name: 'menu_analysis_exchange', // 통로 이름
+          name: 'menu_analysis_exchange',
           type: 'topic',
         },
       ],
-      uri: 'amqp://guest:guest@localhost:5672', // Docker Compose 설정과 동일하게
+      uri: 'amqp://guest:guest@localhost:5672',
       connectionInitOptions: { wait: false },
     }),
 
