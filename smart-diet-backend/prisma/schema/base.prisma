@@ -18,3 +18,12 @@ enum MealType {
     DINNER
     SNACK
 }
+
+// 분석 작업의 상태 (Saga 패턴 단계 반영)
+enum AnalysisStatus {
+  PENDING           // 요청 수신 및 작업 생성
+  OCR_PROCESSING    // FastAPI에서 텍스트 추출 중
+  ADVICE_GENERATING // GPT/LLM이 식단 조언 생성 중
+  COMPLETED         // 분석 완료
+  FAILED            // 분석 실패
+}
