@@ -11,3 +11,15 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+  # ✅ RabbitMQ 설정
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: smart-diet-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672" # RabbitMQ 기본 포트
+      - "15672:15672" # RabbitMQ 관리 콘솔 포트
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest

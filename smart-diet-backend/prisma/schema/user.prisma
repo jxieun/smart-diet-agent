@@ -13,6 +13,9 @@ model User {
   
   // Meal 모델과의 관계
   meals           Meal[]  
+
+  // AnalysisTask 모델과의 관계
+  analysisTasks AnalysisTask[]
   
   createdAt       DateTime @default(now()) @map("created_at")
 
