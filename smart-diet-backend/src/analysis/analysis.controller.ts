@@ -9,7 +9,8 @@ import {
   UploadedFile, 
   HttpStatus,
   ParseFilePipeBuilder,
-  BadRequestException
+  BadRequestException,
+  NotFoundException
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { 
@@ -23,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AnalysisService } from './analysis.service';
+import { AnalysisResponseDto } from './dto/analysis-response.dto';
 
 @ApiTags('Analysis (메뉴 분석)') // Swagger에서 그룹화될 이름
 @ApiBearerAuth() // JWT 자물쇠 아이콘 활성화
@@ -50,7 +52,8 @@ export class AnalysisController {
       },
     },
   })
-  @ApiResponse({ status: 201, description: '분석 요청 접수 성공 (taskId 반환)' })
+  // ✅ 성공 응답 타입을 DTO로 명시합니다.
+  @ApiResponse({ status: 201, description: '분석 요청 접수 성공', type: AnalysisResponseDto })
   @ApiResponse({ status: 400, description: '잘못된 파일 형식 또는 용량 초과' })
   async analyzeMenu(
     @Request() req, 
@@ -74,11 +77,8 @@ export class AnalysisController {
     const imageUrl = file.path; 
     const task = await this.analysisService.createAnalysisTask(req.user.id, imageUrl);
   
-    return {
-      message: '메뉴판 분석 요청이 성공적으로 접수되었습니다.',
-      taskId: task.id,
-      imageUrl: imageUrl
-    };
+    // ✅ DTO 인스턴스를 생성하여 반환합니다.
+    return new AnalysisResponseDto(task);
   }
 
   @Get('tasks/:taskId')
@@ -91,9 +91,16 @@ export class AnalysisController {
     description: '분석 요청 시 발급받은 작업 ID (UUID)',
     example: '8cbe8489-7e5d-4a1e-8f92-...' 
   })
-  @ApiResponse({ status: 200, description: '조회 성공' })
+  // ✅ 배열이 아닌 단일 객체 타입임을 명시합니다.
+  @ApiResponse({ status: 200, description: '조회 성공', type: AnalysisResponseDto })
   @ApiResponse({ status: 404, description: '해당 작업을 찾을 수 없음' })
   async getStatus(@Param('taskId') taskId: string, @Request() req) {
-    return this.analysisService.getTaskStatus(taskId, req.user.id);
-  }
+    const task = await this.analysisService.getTaskStatus(taskId, req.user.id);
+    // ✅ task가 null인 경우 404 에러를 던져서 흐름을 끊어줍니다.
+    if (!task) {
+      throw new NotFoundException('해당 분석 작업을 찾을 수 없습니다.');
+    }
+
+    return new AnalysisResponseDto(task);
+ }
 }

@@ -12,13 +12,13 @@ export class AnalysisResponseDto {
   imageUrl: string;
 
   @ApiProperty({ description: '분석 시점의 유저 목표 칼로리', example: 2500, required: false })
-  targetCalories: number;
+  targetCalories: number | null;
 
   @ApiProperty({ description: 'AI 분석 결과 데이터 (JSON)', required: false, nullable: true })
-  result: any;
+  result: any | null;
 
   @ApiProperty({ description: '에러 발생 시 메시지', required: false, nullable: true })
-  errorMessage: string;
+  errorMessage: string | null;
 
   @ApiProperty({ description: '생성 일시' })
   createdAt: Date;
