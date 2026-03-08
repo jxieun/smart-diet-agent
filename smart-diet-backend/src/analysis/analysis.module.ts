@@ -1,5 +1,6 @@
 import { Module, BadRequestException } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { AnalysisController } from './analysis.controller';
@@ -9,6 +10,18 @@ import { PrismaModule } from '../prisma/prisma.module';
 @Module({
   imports: [
     PrismaModule,
+    // ✅ RabbitMQ 연결 설정
+    RabbitMQModule.forRoot(RabbitMQModule, {
+      exchanges: [
+        {
+          name: 'menu_analysis_exchange', // 통로 이름
+          type: 'topic',
+        },
+      ],
+      uri: 'amqp://guest:guest@localhost:5672', // Docker Compose 설정과 동일하게
+      connectionInitOptions: { wait: false },
+    }),
+
     MulterModule.register({
       storage: diskStorage({
         // 📂 프로젝트 루트의 uploads 폴더에 저장합
@@ -34,5 +47,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   ],
   controllers: [AnalysisController],
   providers: [AnalysisService],
+  exports: [RabbitMQModule], // 다른 모듈에서 메시지를 보낼 수도 있으니 export!
 })
 export class AnalysisModule {}
