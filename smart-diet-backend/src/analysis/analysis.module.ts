@@ -20,6 +20,14 @@ import { PrismaModule } from '../prisma/prisma.module';
           callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
         },
       }),
+      // ✅ 1. 파일 형식 필터링 추가
+      fileFilter: (req, file, callback) => {
+       if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+         return callback(new BadRequestException('이미지 파일만 업로드 가능합니다!'), false);
+      }
+      callback(null, true);
+    },
+      // ✅ 2. 용량 제한 (5MB)
       // 🛡️ 파일 크기 제한 (예: 5MB)
       limits: { fileSize: 5 * 1024 * 1024 }, 
     }),
