@@ -37,7 +37,7 @@ export class AnalysisController {
           }),
           // 🛡️ 허용된 이미지 확장자만 통과
           new FileTypeValidator({ 
-            fileType: '.(png|jpeg|jpg|gif)' 
+            fileType: /(image\/png|image\/jpeg|image\/jpg|image\/gif)/
           }),
         ],
       }),
