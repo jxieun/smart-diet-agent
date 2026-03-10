@@ -16,7 +16,13 @@ async def process_message(message: aio_pika.IncomingMessage):
         print(f"🔍 [분석 시작] Task ID: {task.taskId}")
         
         # NestJS의 이미지 저장 경로와 맞춤
+        # 1. imageUrl에서 앞의 '/'를 제거해주는 처리를 추가
+        safe_image_path = task.imageUrl.lstrip('/')
         full_path = os.path.join("../smart-diet-backend", task.imageUrl)
+        
+        # 2. 이 로그를 추가해서 실제 경로를 확인해 보세요!
+        print(f"📍 시스템이 찾고 있는 전체 경로: {full_path}")
+        print(f"❓ 파일이 실제로 있나요?: {os.path.exists(full_path)}")
         
         # OCR 서비스 호출
         results = ocr_service.extract_text(full_path)
